@@ -1,3 +1,44 @@
+<?php
+ require "./BDD.php";
+ $submit=filter_input(INPUT_POST,'publish');
+ if($submit =="Publish"){ 
+    echo"ddd";
+    // File upload configuration 
+    $targetDir = "images/"; 
+    $allowTypes = array('jpg','png','jpeg','gif'); 
+     
+    $statusMsg = $errorMsg = $insertValuesSQL = $errorUpload = $errorUploadType = ''; 
+    $fileNames = array_filter($_FILES['files']['name']); 
+    if(!empty($fileNames)){ 
+        foreach($fileNames as $key=>$val){ 
+            // File upload path 
+            $fileName = basename($_FILES['files']['name'][$key]); 
+            $targetFilePath = $targetDir . $fileName; 
+             
+            // Check whether file type is valid 
+            $fileType = pathinfo($targetFilePath, PATHINFO_EXTENSION); 
+            if(in_array($fileType, $allowTypes)){ 
+                // Upload file to server 
+                if(move_uploaded_file($_FILES["files"]["tmp_name"][$key], $targetFilePath)){ 
+                    // Image db insert sql 
+                    $insertValuesSQL .= "('".$fileName."', NOW()),"; 
+                }else{ 
+                    $errorUpload .= $_FILES['files']['name'][$key].' | '; 
+                } 
+            }else{ 
+                $errorUploadType .= $_FILES['files']['name'][$key].' | '; 
+            } 
+        } 
+    }
+}
+
+
+ 
+
+
+
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -67,10 +108,12 @@
 
                 </div>
                 <div class="well" style="height: 100%;">
-                    <form class="form"style="margin:50px">
-                        <h4>La page est encore en construction</h4>
+                    <form method="POST"class="form"style="margin:50px" enctype="multipart/form-data">
+                        <h4>Ecrivez un commentaire</h4>
                         <textarea id="w3review" name="w3review" rows="4" cols="50" placeholder="Write something..."></textarea>
-                        <input type="file" name="media[]" required multiple accept=".png,.jpg,.jpeg,.webep">
+                        <h4>Selectionnez un media a envoyer</h4>
+                        <input type="file" name="files[]" required multiple accept="image/*">
+                        <br>
                         <input type="submit" name="publish"id="publish" value="Publish">
 
                     </form>
