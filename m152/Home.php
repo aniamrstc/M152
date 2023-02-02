@@ -1,5 +1,11 @@
+<!--
+projet:Realiser un blog
+Auteur:Ania Marostica
+Date:02.02.2023
+Description:page d'accueil du site
+-->
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 	<head>
         <meta http-equiv="content-type" content="text/html; charset=UTF-8"> 
         <meta charset="utf-8">

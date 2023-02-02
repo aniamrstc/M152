@@ -1,4 +1,8 @@
 <?php
+// projet:Realiser un blog
+// Auteur:Ania Marostica
+// Date:02.02.2023
+// Description:page qui contient toute les fonctions de la base de données
 require_once "Constante.php";
 function getConnexion()
 {
@@ -16,10 +20,33 @@ function getConnexion()
     return $myDb;
 }
 
-function InsertMedia($file_type,$file_name,){
-    // enregistrement des informations dans la base de données
-    $sql = getConnexion()->prepare("INSERT INTO MEDIA (typeMedia, nomMedia, creationDate) VALUES (?,?,DATE(NOW()))");
-  $sql->execute([$file_type,$file_name]);
- 
+/**
+ *insertion des images dans la base de donnée.
+ * 
+ * @param file_type le type du media
+ * @param file_name le nom du media
+ * @param idPost l'id du dernier post
+ */
+function InsertMedia($file_type, $file_name,$idPost)
+{
+
+    $sql = getConnexion()->prepare("INSERT INTO MEDIA (typeMedia, nomMedia, creationDate,idPost) VALUES (?,?,DATE(NOW()),?)");
+    $sql->execute([$file_type, $file_name,$idPost]);
+}
+/**
+ * insere des nouveau post dans la base de données
+ * 
+ * @param commentaire le commentaire saisi
+ * 
+ * @return The le dernier id 
+ */
+function InsertPost($commentaire)
+{
+
+    $myDb = getConnexion();
+    $sql=$myDb->prepare("INSERT INTO POST (commentaire,creationDate,modificationDate) VALUES (?,DATE(NOW()),DATE(NOW()))");
+    $sql->execute([$commentaire]);
+    return $myDb->lastInsertId();
+
 }
 ?>
