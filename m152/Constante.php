@@ -7,7 +7,7 @@
 // Description:page des constante de connexion 
 
 const DB_HOST = 'localhost';
-const DB_NAME = "M152BDD";
+const DB_NAME = "M152_AM";
 const DB_USER = 'aniamrstc';
 const DB_PASSWORD = 'Super1214';
 
