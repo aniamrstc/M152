@@ -9,6 +9,6 @@
 const DB_HOST = 'localhost';
 const DB_NAME = "M152_AM";
 const DB_USER = 'aniamrstc';
-const DB_PASSWORD = 'Super1214';
+const DB_PASSWORD = 'Super';
 
 ?>

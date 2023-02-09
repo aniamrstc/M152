@@ -11,70 +11,84 @@ ini_set('memory_limit', '-1');
 error_reporting(E_ALL);
 
 require "./BDD.php";
+//initialisation variable
 $submit = filter_input(INPUT_POST, 'publish');
 $commentaire = filter_input(INPUT_POST, 'commentaire');
+$targetDir = "/var/www/html/m152/m152/images/"; //chemin du dosier ou seront stocker les medias
+$allowTypes = array('jpg', 'png', 'jpeg', 'gif'); //tableaux des type accepter
+$fileSize = 0; //taille de tout les media contenu dans le dossier
+$MaxSizeOneFile = 3*1024*1024; //taille maximum pour un media 
+$MaxSizeAllFile = 70 * 1024 * 1024; //taille maximum pour tout les media
+$php_errormsg = ""; //variable pour les messages d'erreurs
+$php_successmsg = ""; //varible pour les messages de success
 if ($submit == "Publish") {
-
-    $idPost = InsertPost($commentaire);
-    $targetDir = "/var/www/html/m152/m152/images/"; //chemin du dosier ou seront stocker les medias
-    $allowTypes = array('jpg', 'png', 'jpeg', 'gif'); //tableaux des type accepter
-    $fileSize = 0; //taille de tout les media contenu dans le dossier
-    $MaxSizeOneFile = 3 * 1024 * 1024; //taille maximum pour un media 
-    $MaxSizeAllFile = 70 * 1024 * 1024; //taille maximum pour tout les media
-    $php_errormsg = ""; //variable pour les messages d'erreurs
-    $php_successmsg = ""; //varible pour les messages de success
-
-
-    $fileNames = array_filter($_FILES['files']['name']);
-    if (!empty($fileNames)) {
-        for ($i = 0; $i < count($_FILES['files']['name']); $i++) {
-            $file = $_FILES['files'];
-            $fileSize += $file['size'][$i];
-        }
-        //si la taille de tout les fichier est est plus petit ou equal a 70 mega on execute
-        if ($fileSize <= $MaxSizeAllFile) {
-            foreach ($fileNames as $key => $val) {
-
-
+    //lancement de la transaction
+    getConnexion()->beginTransaction();
+    try {
+        $idPost = InsertPost($commentaire);
+        $fileNames = array_filter($_FILES['files']['name']);
+        if (!empty($fileNames)) {
+            for ($i = 0; $i < count($_FILES['files']['name']); $i++) {
                 $file = $_FILES['files'];
+                $fileSize += $file['size'][$i];
+            }
+            //si la taille de tout les fichier est est plus petit ou equal a 70 mega on execute
+            if ($fileSize <= $MaxSizeAllFile) {
+                foreach ($fileNames as $key => $val) {
+                    $file = $_FILES['files'];
+                    //si la taille d'un fichier est plus petit ou egal a 3 mega on execute
+                    if ($file['size'][$key] <= $MaxSizeOneFile) {
+                        $fileName = basename($_FILES['files']['name'][$key]);
+                        //recuperer l'extension du fichier
+                        $fileType = pathinfo($fileName, PATHINFO_EXTENSION);
+                        //si le tableaux contient bien le bon type d'extension 
+                        if (in_array($fileType, $allowTypes)) {
 
 
+                            $file_part = pathinfo($fileName);
+                            //on met le nom du fichier sans l'extension+un l'uniqid+l'extension
+                            $unique_filename = $file_part['filename'] . '_' . uniqid() . '.' . $file_part['extension'];
+                            //on concatene le chemin et le non unique puis on le deplace dans notre fichier
+                            $full_path = $targetDir . $unique_filename;
 
-                //si la taille d'un fichier est plus petit ou egal a 3 mega on execute
-                if ($file['size'][$key] <= $MaxSizeOneFile) {
-                    $fileName = basename($_FILES['files']['name'][$key]);
-                    //recuperer l'extension du fichier
-                    $fileType = pathinfo($fileName, PATHINFO_EXTENSION);
-                    //si le tableaux contient bien le bon type d'extension 
-                    if (in_array($fileType, $allowTypes)) {
+                            echo "dd";
+                            //si le fichier a bien été stocker dans le dossier on insere les données dans la base 
+                            if (move_uploaded_file($_FILES["files"]["tmp_name"][$key], $full_path)) {
+                                if (file_exists($full_path)) {
 
+                                    InsertMedia($fileType, $unique_filename, $idPost);
+                                    $php_successmsg = "Le media a bien été ajouter";
+                                    header("location:Home.php");
+                                } else {
+                                    $php_errormsg = "l'importation n'a pas marcher";
+                                }
+                            }
 
-                        $file_part = pathinfo($fileName);
-                        //on met le nom du fichier sans l'extension+un l'uniqid+l'extension
-                        $unique_filename = $file_part['filename'] . '_' . uniqid() . '.' . $file_part['extension'];
-                        //on concatene le chemin et le non unique puis on le deplace dans notre fichier
-                        $full_path = $targetDir . $unique_filename;
-                        //si le fichier a bien été stocker dans le dossier on insere les données dans la base 
-                        if (move_uploaded_file($_FILES["files"]["tmp_name"][$key], $full_path)) {
-
-                            InsertMedia($fileType, $unique_filename, $idPost);
-                            $php_successmsg = "Le media a bien été ajouter";
-                            header("location:Home.php");
+                            //sinon le message d'erreur prend la valeur suivante
+                        } else {
+                            $php_errormsg = "ce type de media n'est pas accepter";
                         }
-
                         //sinon le message d'erreur prend la valeur suivante
                     } else {
-                        $php_errormsg = "ce type de media n'est pas accepter";
+                        $php_errormsg = 'le poid de ce media est trop lourd';
                     }
-                    //sinon le message d'erreur prend la valeur suivante
-                } else {
-                    $php_errormsg = 'le poid de ce media est trop lourd';
                 }
+                //sinon le message d'erreur prend la valeur suivante
+            } else {
+                $php_errormsg = 'le dossier est trop plein pour ajouter de nouveau media';
             }
-            //sinon le message d'erreur prend la valeur suivante
-        } else {
-            $php_errormsg = 'le dossier est trop plein pour ajouter de nouveau media';
         }
+        //si il y a une erreur php donc de l'utilisateur on rollback sinon on commit
+        if (isset($php_errormsg)) {
+            getConnexion()->rollback();
+        } else {
+            getConnexion()->commit();
+        }
+    //si sa ne fonctionne pas on rolleback
+    } catch (PDOException $exception) {
+        getConnexion()->rollback();
+
+        throw $exception;
     }
 }
 
@@ -148,7 +162,7 @@ if ($submit == "Publish") {
                         <h4>Ecrivez un commentaire</h4>
                         <textarea class="form-control" id="commentaire" name="commentaire" rows="10" cols="100" placeholder="Write something..."></textarea>
                         <h4>Selectionner un media </h4>
-                          <input type="file" name="files[]" required multiple accept="image/*" >
+                        <input type="file" name="files[]" required multiple accept="image/*">
                         <br>
                         <input class="btn btn-primary" type="submit" name="publish" id="publish" value="Publish">
                         <p> <?php
