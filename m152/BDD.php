@@ -85,8 +85,15 @@ function GetNumberOfMediaForAPost($idPost){
  */
 function SelectMedia($idPost){
     $myDb=getConnexion();
-    $sql=$myDb->prepare("SELECT MEDIA.nomMedia FROM MEDIA,POST WHERE MEDIA.idPost=POST.idPost AND POST.idPost=? ");
+    $sql=$myDb->prepare("SELECT MEDIA.nomMedia,MEDIA.typeMedia FROM MEDIA,POST WHERE MEDIA.idPost=POST.idPost AND POST.idPost=? ");
     $sql->execute([$idPost]);
     return $sql->fetchAll(PDO::FETCH_ASSOC);
+}
+
+function DeletePost($idPost){
+    $myDb=getConnexion();
+    $sql=$myDb->prepare("DELETE From POST WHERE POST.idPost=?");
+    $sql->execute([$idPost]);
+
 }
 ?>

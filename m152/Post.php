@@ -15,12 +15,12 @@ require "./BDD.php";
 $submit = filter_input(INPUT_POST, 'publish');
 $commentaire = filter_input(INPUT_POST, 'commentaire');
 $targetDir = "/var/www/html/m152/m152/images/"; //chemin du dosier ou seront stocker les medias
-$allowTypes = array('jpg', 'png', 'jpeg', 'gif'); //tableaux des type accepter
+$allowTypes = array('jpg', 'png', 'jpeg', 'gif','mp4','ogg','mp3'); //tableaux des type accepter
 $fileSize = 0; //taille de tout les media contenu dans le dossier
 $MaxSizeOneFile = 3*1024*1024; //taille maximum pour un media 
 $MaxSizeAllFile = 70 * 1024 * 1024; //taille maximum pour tout les media
 $php_errormsg = ""; //variable pour les messages d'erreurs
-$php_successmsg = ""; //varible pour les messages de success
+
 if ($submit == "Publish") {
     //lancement de la transaction
     getConnexion()->beginTransaction();
@@ -47,7 +47,7 @@ if ($submit == "Publish") {
 
                             $file_part = pathinfo($fileName);
                             //on met le nom du fichier sans l'extension+un l'uniqid+l'extension
-                            $unique_filename = $file_part['filename'] . '_' . uniqid() . '.' . $file_part['extension'];
+                            $unique_filename =uniqid() . '.' . $file_part['extension'];
                             //on concatene le chemin et le non unique puis on le deplace dans notre fichier
                             $full_path = $targetDir . $unique_filename;
 
@@ -56,9 +56,8 @@ if ($submit == "Publish") {
                             if (move_uploaded_file($_FILES["files"]["tmp_name"][$key], $full_path)) {
                                 if (file_exists($full_path)) {
 
-                                    InsertMedia($fileType, $unique_filename, $idPost);
-                                    $php_successmsg = "Le media a bien été ajouter";
-                                    header("location:Home.php");
+                                    InsertMedia($_FILES['files']['type'][$key], $unique_filename, $idPost);
+                                  
                                 } else {
                                     $php_errormsg = "l'importation n'a pas marcher";
                                 }
@@ -78,11 +77,13 @@ if ($submit == "Publish") {
                 $php_errormsg = 'le dossier est trop plein pour ajouter de nouveau media';
             }
         }
-        //si il y a une erreur php donc de l'utilisateur on rollback sinon on commit
-        if (isset($php_errormsg)) {
-            getConnexion()->rollback();
-        } else {
+        if($php_errormsg != ""){
+            getConnexion()->rollBack();
+        }
+        else{
             getConnexion()->commit();
+            header("location:Home.php");
+            exit;
         }
     //si sa ne fonctionne pas on rolleback
     } catch (PDOException $exception) {
@@ -162,7 +163,7 @@ if ($submit == "Publish") {
                         <h4>Ecrivez un commentaire</h4>
                         <textarea class="form-control" id="commentaire" name="commentaire" rows="10" cols="100" placeholder="Write something..."></textarea>
                         <h4>Selectionner un media </h4>
-                        <input type="file" name="files[]" required multiple accept="image/*">
+                        <input type="file" name="files[]" required multiple accept="image/*,video/*,audio/*">
                         <br>
                         <input class="btn btn-primary" type="submit" name="publish" id="publish" value="Publish">
                         <p> <?php

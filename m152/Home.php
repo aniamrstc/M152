@@ -8,6 +8,8 @@ require "./BDD.php";
 $post = SelectPost();
 
 $path = "./images/";
+$delete = filter_input(INPUT_POST, 'delete');
+$deleteAMEdia = filter_input(INPUT_POST, 'deleteAMEdia');
 
 
 ?>
@@ -132,14 +134,29 @@ $path = "./images/";
 
 										if ($numberOfMediaForAPost >= 2) { ?>
 
-											<div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+											<div id="carousel<?= $value['idPost'] ?>" class="carousel slide" data-ride="carousel">
 												<div class="carousel-inner" role="listbox">
 													<?php
 													$isFirst = true;
 													foreach ($arrayMedia as $media) {
+														if ($delete == "Delete") {
+															DeletePost($value['idPost']);
+															unlink($path . $media['nomMedia']);
+														}
 													?>
-														<div class="item <?= $isFirst ? 'active' : '' ?>">
-															<img src="<?= $path . $media['nomMedia'] ?>" alt="...">
+														<div class="item <?= $isFirst ? 'active' : '' ?> ">
+
+															<?php if (explode("/", $media['typeMedia'])[0] == "video") { ?>
+																<video class="img-responsive" autoplay loop>
+																	<source src="<?= $path . $media['nomMedia'] ?>">
+																</video>
+															<?php } elseif (explode("/", $media['typeMedia'])[0] == "audio") { ?>
+																<audio controls>
+																	<source src="<?= $path . $media['nomMedia'] ?>">
+																</audio>
+															<?php } else { ?>
+																<img src="<?= $path . $media['nomMedia'] ?>" alt="... " class="img-responsive">
+															<?php } ?>
 														</div>
 
 													<?php
@@ -150,11 +167,11 @@ $path = "./images/";
 												</div>
 
 												<!-- Controls -->
-												<a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
+												<a class="left carousel-control" href="#carousel<?= $value['idPost'] ?>" role="button" data-slide="prev">
 													<span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
 													<span class="sr-only">Previous</span>
 												</a>
-												<a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
+												<a class="right carousel-control" href="#carousel<?= $value['idPost'] ?>" role="button" data-slide="next">
 													<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
 													<span class="sr-only">Next</span>
 												</a>
@@ -162,32 +179,48 @@ $path = "./images/";
 
 											<div class="panel-body">
 												<p class="lead"><?= $value['commentaire']; ?> </p>
-												<button class="btn"><i class="fa fa-pencil"></i></button>
-												<button class="btn"><i class="fa fa-trash"></i></button>
-												<p><?= $value['creationDate'] ?></p>
 
-												<p>
-													<img src="assets/img/photo.jpg" height="28px" width="28px">
-													<img src="assets/img/photo.png" height="28px" width="28px">
-													<img src="assets/img/photo_002.jpg" height="28px" width="28px">
-												</p>
-											</div>
-										<?php } elseif ($numberOfMediaForAPost == 1) { ?>
-											<!--message du post-->
-											<div class="panel panel-default">
-												<div class="panel-thumbnail"><img src="<?= $path . $arrayMedia[0]['nomMedia'] ?>" class="img-responsive"></div>
-												<div class="panel-body">
-													<p class="lead"><?= $value['commentaire']; ?> </p>
+												<form method="POST">
+													<!--<input type="submit" name="delete" value='Delete'>-->
+
 													<button class="btn"><i class="fa fa-pencil"></i></button>
 													<button class="btn"><i class="fa fa-trash"></i></button>
 													<p><?= $value['creationDate'] ?></p>
+												</form>
 
+											</div>
+										<?php } elseif ($numberOfMediaForAPost == 1) {
+											if ($deleteAMEdia == "Delete") {
+												DeletePost($value['idPost']);
+												unlink($path . $arrayMedia[0]['nomMedia']);
+											}
+										?>
 
-													<p>
-														<img src="assets/img/photo.jpg" height="28px" width="28px">
-														<img src="assets/img/photo.png" height="28px" width="28px">
-														<img src="assets/img/photo_002.jpg" height="28px" width="28px">
-													</p>
+											<!--message du post-->
+											<div class="panel panel-default">
+												<div class="panel-thumbnail">
+													<?php if (explode("/", $arrayMedia[0]['typeMedia'])[0] == "video") { ?>
+														<video class="img-responsive" autoplay loop>
+															<source src="<?= $path . $arrayMedia[0]['nomMedia'] ?>">
+														</video>
+													<?php } elseif (explode("/", $arrayMedia[0]['typeMedia'])[0] == "audio") { ?>
+														<audio controls>
+															<source src="<?= $path . $arrayMedia[0]['nomMedia'] ?>">
+														</audio>
+													<?php } else { ?>
+														<img src="<?= $path . $arrayMedia[0]['nomMedia'] ?>" class="img-responsive">
+													<?php } ?>
+												</div>
+
+												<div class="panel-body">
+													<p class="lead"><?= $value['commentaire']; ?> </p>
+													<form method="POST">
+														<!--<input type="submit" name="deleteAMEdia" value='Delete'>-->
+														<button class="btn"><i class="fa fa-pencil"></i></button>
+														<button class="btn"><i class="fa fa-trash"></i></button>
+
+														<p><?= $value['creationDate'] ?></p>
+													</form>
 												</div>
 											</div>
 										<?php } ?>
@@ -211,19 +244,19 @@ $path = "./images/";
 
 </html>
 
-	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 
 <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 
 
 <script>
-    // Initialize tooltip component
-    $(function() {
-        $('[data-toggle="tooltip"]').tooltip()
-    })
+	// Initialize tooltip component
+	$(function() {
+		$('[data-toggle="tooltip"]').tooltip()
+	})
 
-   
-    $(function() {
-        $('[data-toggle="popover"]').popover()
-    })
+
+	$(function() {
+		$('[data-toggle="popover"]').popover()
+	})
 </script>
