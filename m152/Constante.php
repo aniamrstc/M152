@@ -8,7 +8,7 @@
 
 const DB_HOST = 'localhost';
 const DB_NAME = "M152_AM";
-const DB_USER = 'aniamrstc';
-const DB_PASSWORD = 'Super';
+const DB_USER = 'M152';
+const DB_PASSWORD = 'BlogM152';
 
 ?>
