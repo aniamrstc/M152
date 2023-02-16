@@ -53,14 +53,7 @@ $deleteAMEdia = filter_input(INPUT_POST, 'deleteAMEdia');
 							<a href="http://usebootstrap.com/theme/facebook" class="navbar-brand logo">b</a>
 						</div>
 						<nav class="collapse navbar-collapse" role="navigation">
-							<form class="navbar-form navbar-left">
-								<div class="input-group input-group-sm" style="max-width:360px;">
-									<input class="form-control" placeholder="Search" name="srch-term" id="srch-term" type="text">
-									<div class="input-group-btn">
-										<button class="btn btn-default" type="submit"><i class="glyphicon glyphicon-search"></i></button>
-									</div>
-								</div>
-							</form>
+							
 							<ul class="nav navbar-nav">
 								<li>
 									<a href="#"><i class="glyphicon glyphicon-home"></i> Home</a>
@@ -68,9 +61,7 @@ $deleteAMEdia = filter_input(INPUT_POST, 'deleteAMEdia');
 								<li>
 									<a href="./Post.php" role="button" data-toggle="modal"><i class="glyphicon glyphicon-plus"></i> Post</a>
 								</li>
-								<li>
-									<a href="#"><span class="badge">badge</span></a>
-								</li>
+								
 							</ul>
 							<ul class="nav navbar-nav navbar-right">
 								<li class="dropdown">
@@ -128,76 +119,69 @@ $deleteAMEdia = filter_input(INPUT_POST, 'deleteAMEdia');
 									</div>
 									<?php foreach ($post as $key => $value) {
 										$arrayMedia = SelectMedia($value['idPost']);
-										$numberOfMediaForAPost = GetNumberOfMediaForAPost($value['idPost']);
+										$numberOfMediaForAPost = GetNumberOfMediaForAPost($value['idPost']); ?>
 
 
+										<div class="panel panel-default">
+											<?php if ($numberOfMediaForAPost >= 2) { ?>
 
-										if ($numberOfMediaForAPost >= 2) { ?>
+												<div id="carousel<?= $value['idPost'] ?>" class="carousel slide" data-ride="carousel">
+													<div class="carousel-inner" role="listbox">
+														<?php
+														$isFirst = true;
+														foreach ($arrayMedia as $media) {
+															if ($delete == "Delete") {
+																DeletePost($value['idPost']);
+																unlink($path . $media['nomMedia']);
+															}
+														?>
+															<div class="item <?= $isFirst ? 'active' : '' ?> ">
 
-											<div id="carousel<?= $value['idPost'] ?>" class="carousel slide" data-ride="carousel">
-												<div class="carousel-inner" role="listbox">
-													<?php
-													$isFirst = true;
-													foreach ($arrayMedia as $media) {
-														if ($delete == "Delete") {
-															DeletePost($value['idPost']);
-															unlink($path . $media['nomMedia']);
+																<?php if (explode("/", $media['typeMedia'])[0] == "video") { ?>
+																	<video class="img-responsive" autoplay loop>
+																		<source src="<?= $path . $media['nomMedia'] ?>">
+																	</video>
+																<?php }elseif(explode("/", $media['typeMedia'])[0] == "audio"){?>
+																	
+																	<?php }else { ?>
+																	<img src="<?= $path . $media['nomMedia'] ?>" alt="... " class="img-responsive">
+																<?php } ?>
+															</div>
+
+														<?php
+															$isFirst = false;
 														}
-													?>
-														<div class="item <?= $isFirst ? 'active' : '' ?> ">
+														?>
 
-															<?php if (explode("/", $media['typeMedia'])[0] == "video") { ?>
-																<video class="img-responsive" autoplay loop>
-																	<source src="<?= $path . $media['nomMedia'] ?>">
-																</video>
-															<?php } elseif (explode("/", $media['typeMedia'])[0] == "audio") { ?>
-																<audio controls>
-																	<source src="<?= $path . $media['nomMedia'] ?>">
-																</audio>
-															<?php } else { ?>
-																<img src="<?= $path . $media['nomMedia'] ?>" alt="... " class="img-responsive">
-															<?php } ?>
-														</div>
+													</div>
 
-													<?php
-														$isFirst = false;
-													}
-													?>
-
+													<!-- Controls -->
+													<a class="left carousel-control" href="#carousel<?= $value['idPost'] ?>" role="button" data-slide="prev">
+														<span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+														<span class="sr-only">Previous</span>
+													</a>
+													<a class="right carousel-control" href="#carousel<?= $value['idPost'] ?>" role="button" data-slide="next">
+														<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+														<span class="sr-only">Next</span>
+													</a>
 												</div>
+												<?php foreach ($arrayMedia as $media) {
+													if (explode("/", $media['typeMedia'])[0] == "audio") { ?>
+														<audio controls>
+															<source src="<?= $path . $media['nomMedia'] ?>">
+														</audio>
+												<?php }
+												}
+												?>
+											<?php } elseif ($numberOfMediaForAPost == 1) {
+												if ($deleteAMEdia == "Delete") {
+													DeletePost($value['idPost']);
+													unlink($path . $arrayMedia[0]['nomMedia']);
+												}
+											?>
 
-												<!-- Controls -->
-												<a class="left carousel-control" href="#carousel<?= $value['idPost'] ?>" role="button" data-slide="prev">
-													<span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
-													<span class="sr-only">Previous</span>
-												</a>
-												<a class="right carousel-control" href="#carousel<?= $value['idPost'] ?>" role="button" data-slide="next">
-													<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
-													<span class="sr-only">Next</span>
-												</a>
-											</div>
+												<!--message du post-->
 
-											<div class="panel-body">
-												<p class="lead"><?= $value['commentaire']; ?> </p>
-
-												<form method="POST">
-													<!--<input type="submit" name="delete" value='Delete'>-->
-
-													<button class="btn"><i class="fa fa-pencil"></i></button>
-													<button class="btn"><i class="fa fa-trash"></i></button>
-													<p><?= $value['creationDate'] ?></p>
-												</form>
-
-											</div>
-										<?php } elseif ($numberOfMediaForAPost == 1) {
-											if ($deleteAMEdia == "Delete") {
-												DeletePost($value['idPost']);
-												unlink($path . $arrayMedia[0]['nomMedia']);
-											}
-										?>
-
-											<!--message du post-->
-											<div class="panel panel-default">
 												<div class="panel-thumbnail">
 													<?php if (explode("/", $arrayMedia[0]['typeMedia'])[0] == "video") { ?>
 														<video class="img-responsive" autoplay loop>
@@ -212,20 +196,23 @@ $deleteAMEdia = filter_input(INPUT_POST, 'deleteAMEdia');
 													<?php } ?>
 												</div>
 
-												<div class="panel-body">
-													<p class="lead"><?= $value['commentaire']; ?> </p>
-													<form method="POST">
-														<!--<input type="submit" name="deleteAMEdia" value='Delete'>-->
-														<button class="btn"><i class="fa fa-pencil"></i></button>
-														<button class="btn"><i class="fa fa-trash"></i></button>
 
-														<p><?= $value['creationDate'] ?></p>
-													</form>
-												</div>
+											<?php
+											} ?>
+
+
+											<div class="panel-body">
+												<p class="lead"><?= $value['commentaire']; ?> </p>
+												<form method="POST">
+													<!--<input type="submit" name="deleteAMEdia" value='Delete'>-->
+													<button class="btn"><i class="fa fa-pencil"></i></button>
+													<button class="btn"><i class="fa fa-trash"></i></button>
+
+													<p><?= $value['creationDate'] ?></p>
+												</form>
 											</div>
-										<?php } ?>
+										</div>
 									<?php } ?>
-
 								</div>
 							</div><!--/row-->
 
