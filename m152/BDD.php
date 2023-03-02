@@ -85,15 +85,43 @@ function GetNumberOfMediaForAPost($idPost){
  */
 function SelectMedia($idPost){
     $myDb=getConnexion();
-    $sql=$myDb->prepare("SELECT MEDIA.nomMedia,MEDIA.typeMedia FROM MEDIA,POST WHERE MEDIA.idPost=POST.idPost AND POST.idPost=? ");
+    $sql=$myDb->prepare("SELECT MEDIA.idMedia,MEDIA.nomMedia,MEDIA.typeMedia FROM MEDIA,POST WHERE MEDIA.idPost=POST.idPost AND POST.idPost=? ");
     $sql->execute([$idPost]);
     return $sql->fetchAll(PDO::FETCH_ASSOC);
 }
 
+/**
+ * Il supprime un message de la base de données.
+ * 
+ * @param idPost L'identifiant du message à supprimer.
+ */
 function DeletePost($idPost){
     $myDb=getConnexion();
     $sql=$myDb->prepare("DELETE From POST WHERE POST.idPost=?");
     $sql->execute([$idPost]);
 
+}
+
+function UpdatePost($commentaire,$idPost){
+    $myDb=getConnexion();
+    $sql=$myDb->prepare("UPDATE POST set commentaire=? WHERE idPost=?");
+    $sql->execute([$commentaire,$idPost]);
+}
+function selectCommentaire($idPost){
+    $myDb=getConnexion();
+    $sql=$myDb->prepare("SELECT commentaire FROM POST WHERE POST.idPost=?");
+    $sql->execute([$idPost]);
+    return $sql->fetchAll(PDO::FETCH_ASSOC);
+}
+function DeleteMedia($idMedia){
+    $myDb=getConnexion();
+    $sql=$myDb->prepare("DELETE From MEDIA WHERE MEDIA.idMedia=?");
+    $sql->execute([$idMedia]);
+}
+function selectMediaByIdMedia($idMedia){
+    $myDb=getConnexion();
+    $sql=$myDb->prepare("SELECT * FROM MEDIA WHERE MEDIA.idMedia=?");
+    $sql->execute([$idMedia]);
+    return $sql->fetchAll(PDO::FETCH_ASSOC);
 }
 ?>
