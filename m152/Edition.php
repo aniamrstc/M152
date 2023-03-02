@@ -101,6 +101,7 @@ if (isset($_POST['delete'])) {
     <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <title>Edition</title>
+
 </head>
 
 <body>
@@ -137,16 +138,16 @@ if (isset($_POST['delete'])) {
                             </ul>
                         </nav>
                     </div>
-                    <div class="well" style="height: 100%;">
+                    <div class="well" style="height: 100%; background-color:#e9eaed;">
                         <?php foreach ($arrayCommentaire as $unCommentaire) { ?>
 
 
-                            <div class="row" style="margin-top: 30px;">
+                            <div class="row" style="margin-top: 30px; height:auto;">
                                 <?php foreach ($arrayMedia as $media) { ?>
                                     <form method="POST" class="form" style="margin:50px" enctype="multipart/form-data">
-                                        <p class="col-xs-6 col-sm-4">
+                                        <div class="col-xs-6 col-sm-4">
                                             <?php if (explode("/", $media['typeMedia'])[0] == "video") { ?>
-                                                <video class="img-responsive" autoplay loop>
+                                                <video class="img-responsive" style=" width:400px;" autoplay loop>
                                                     <source src="<?= $path . $media['nomMedia'] ?>">
                                                 </video>
                                             <?php } elseif (explode("/", $media['typeMedia'])[0] == "audio") { ?>
@@ -154,12 +155,12 @@ if (isset($_POST['delete'])) {
                                                     <source src="<?= $path . $media['nomMedia'] ?>">
                                                 </audio>
                                             <?php } else { ?>
-                                                <img src="<?= $path . $media['nomMedia'] ?>" alt="... " class="img-responsive">
+                                                <img src="<?= $path . $media['nomMedia'] ?>" alt="... " class="img-responsive" style=" width:400px;">
                                             <?php } ?>
-                                            <input type="submit" name="delete" value="&#x1F5D1;">
+                                            <input type="submit" name="delete" value="&#x1F5D1;" style="width: 40px;font-size: 25px; margin:5px 0 25px 0">
                                             <input type="hidden" name="idMedia" value="<?= $media['idMedia'] ?>">
 
-                                        </p>
+                                        </div>
                                     </form> <?php } ?>
                             </div>
                             <form method="POST" class="form" style="margin:50px" enctype="multipart/form-data">
@@ -167,10 +168,10 @@ if (isset($_POST['delete'])) {
 
                                 <textarea class="form-control" id="commentaire" name="commentaire" rows="10" cols="100"><?= $unCommentaire['commentaire'] ?></textarea>
                                 <h4>Selectionner un media </h4>
-                                <input type="file" name="files[]" multiple accept='image/jpg, image/png, image/jpeg, image/gif,video/mp4,audio/mp3'>
-                                <br>
-                                <input class="btn btn-primary" type="submit" name="edit" id="edit" value="edit">
-
+                                <div>
+                                    <input type="file" name="files[]" multiple accept='image/jpg, image/png, image/jpeg, image/gif,video/mp4,audio/mp3' style="display:inline;">
+                                    <input class="btn btn-primary" type="submit" name="edit" id="edit" value="edit" style="width: 100px; margin:0 0 25px 0; float:right;">
+                                </div>
                             </form>
 
                         <?php } ?>
