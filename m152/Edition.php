@@ -70,21 +70,21 @@ if (isset($_POST['edit'])) {
     header("location:Home.php");
     exit;
 }
-if (isset($_POST['delete'])) {
-    $unlinkAsError = false;
-    $deleteAMedia = selectMediaByIdMedia($idMedia);
-    foreach ($deleteAMedia as $Unmedia) {
+// if (isset($_POST['delete'])) {
+//     $unlinkAsError = false;
+//     $deleteAMedia = selectMediaByIdMedia($idMedia);
+//     foreach ($deleteAMedia as $Unmedia) {
 
-        if (!unlink($path . $Unmedia['nomMedia'])) {
-            $unlinkAsError = true;
-        }
-    }
-    if (!$unlinkAsError) {
-        DeleteMedia($idMedia);
-        header("Refresh:0");
-        exit;
-    }
-}
+//         if (!unlink($path . $Unmedia['nomMedia'])) {
+//             $unlinkAsError = true;
+//         }
+//     }
+//     if (!$unlinkAsError) {
+//         DeleteMedia($idMedia);
+//         header("Refresh:0");
+//         exit;
+//     }
+// }
 
 
 
@@ -99,6 +99,7 @@ if (isset($_POST['delete'])) {
     <link href="assets/css/bootstrap.css" rel="stylesheet">
     <link href="assets/css/facebook.css" rel="stylesheet">
     <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <title>Edition</title>
 
@@ -142,22 +143,24 @@ if (isset($_POST['delete'])) {
                         <?php foreach ($arrayCommentaire as $unCommentaire) { ?>
 
 
-                            <div class="row" style="margin-top: 30px; height:auto;">
+                            <div id="media" class="row" style="margin-top: 30px; height:auto;">
                                 <?php foreach ($arrayMedia as $media) { ?>
-                                    <form method="POST" class="form" style="margin:50px" enctype="multipart/form-data">
+                                    <form method="GET" class="form" style="margin:50px" enctype="multipart/form-data">
                                         <div class="col-xs-6 col-sm-4">
-                                            <?php if (explode("/", $media['typeMedia'])[0] == "video") { ?>
-                                                <video class="img-responsive" style=" width:400px;" autoplay loop>
-                                                    <source src="<?= $path . $media['nomMedia'] ?>">
-                                                </video>
-                                            <?php } elseif (explode("/", $media['typeMedia'])[0] == "audio") { ?>
-                                                <audio controls style="width:100%">
-                                                    <source src="<?= $path . $media['nomMedia'] ?>">
-                                                </audio>
-                                            <?php } else { ?>
-                                                <img src="<?= $path . $media['nomMedia'] ?>" alt="... " class="img-responsive" style=" width:400px;">
-                                            <?php } ?>
-                                            <input type="submit" name="delete" value="&#x1F5D1;" style="width: 40px;font-size: 25px; margin:5px 0 25px 0">
+                                           
+                                                <?php if (explode("/", $media['typeMedia'])[0] == "video") { ?>
+                                                    <video class="img-responsive" style=" width:400px;" autoplay loop>
+                                                        <source src="<?= $path . $media['nomMedia'] ?>">
+                                                    </video>
+                                                <?php } elseif (explode("/", $media['typeMedia'])[0] == "audio") { ?>
+                                                    <audio controls style="width:100%">
+                                                        <source src="<?= $path . $media['nomMedia'] ?>">
+                                                    </audio>
+                                                <?php } else { ?>
+                                                    <img src="<?= $path . $media['nomMedia'] ?>" alt="... " class="img-responsive" style=" width:400px;">
+                                                <?php } ?>
+                                         
+                                            <input type="button" onclick="deleteMedia(<?= $media['idMedia'] . ',' . $_SESSION['idPost'] ?>)" name="delete" value="&#x1F5D1;" style="width: 40px;font-size: 25px; margin:5px 0 25px 0">
                                             <input type="hidden" name="idMedia" value="<?= $media['idMedia'] ?>">
 
                                         </div>
@@ -177,7 +180,7 @@ if (isset($_POST['delete'])) {
                         <?php } ?>
                     </div>
                 </div>
-
+                <script src="js/index.js"></script>
 </body>
 
 </html>
