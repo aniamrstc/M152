@@ -36,6 +36,7 @@ function show(idMedia, idPost) {
 
 
     }
-    divAllMedia.innerHTML = media;
+    if(divAllMedia.innerHTML = media){
     location.reload();
+    }
 }

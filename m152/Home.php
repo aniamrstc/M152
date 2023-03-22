@@ -8,8 +8,7 @@ session_start();
 $post = SelectPost();
 
 $path = "./images/";
-$delete = filter_input(INPUT_POST, 'delete');
-$edition = filter_input(INPUT_POST, 'edition');
+
 $idPost = filter_input(INPUT_POST, 'idPost');
 
 //si le bouton est cliquer on va supprimmer tout les medias selon l'id du post et si on la suppression
