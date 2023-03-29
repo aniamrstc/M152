@@ -11,7 +11,8 @@ $idMedia = filter_input(INPUT_POST, 'idMedia');
 $edit = filter_input(INPUT_POST, 'edit');
 $path = "./images/";
 $targetDir = "images/"; //chemin du dosier ou seront stocker les medias
-$allowTypes = array('jpg', 'png', 'jpeg', 'gif', 'mp4', 'mp3'); //tableaux des type accepter
+/* Le code ci-dessus crée un tableau de types de fichiers autorisés à être téléchargés. */
+$allowTypes = array('image/jpg', 'image/png', 'image/jpeg', 'image/gif', 'video/mp4', 'audio/mpeg'); 
 $fileSize = 0; //taille de tout les media contenu dans le dossier
 $MaxSizeOneFile = 3 * 1024 * 1024; //taille maximum pour un media 
 $MaxSizeAllFile = 70 * 1024 * 1024; //taille maximum pour tout les media
@@ -36,11 +37,9 @@ if (isset($_POST['edit'])) {
                 $file = $_FILES['files'];
                 //si la taille d'un fichier est plus petit ou egal a 3 mega on execute
                 if ($file['size'][$key] <= $MaxSizeOneFile) {
-                    $fileName = basename($_FILES['files']['name'][$key]);
-                    //recuperer l'extension du fichier
-                    $fileType = pathinfo($fileName, PATHINFO_EXTENSION);
+                    $fileName = basename($_FILES['files']['name'][$key]);                    
                     //si le tableaux contient bien le bon type d'extension 
-                    if (in_array($fileType, $allowTypes)) {
+                    if (in_array($_FILES['files']['type'][$key], $allowTypes)) {
 
 
                         $file_part = pathinfo($fileName);
@@ -178,7 +177,7 @@ if (isset($_POST['edit'])) {
                                 <textarea class="form-control" id="commentaire" name="commentaire" rows="10" cols="100"><?= $unCommentaire['commentaire'] ?></textarea>
                                 <h4>Selectionner un media </h4>
                                 <div>
-                                    <input type="file" name="files[]" multiple accept='image/jpg, image/png, image/jpeg, image/gif,video/mp4,audio/mp3' style="display:inline;">
+                                    <input type="file" name="files[]" multiple accept='<?php  $type=""; foreach($allowTypes as $unType){$type.=$unType.",";}echo rtrim($type,",")?>' style="display:inline;">
                                     <input class="btn btn-primary" type="submit" name="edit" id="edit" value="edit" style="width: 100px; margin:0 0 25px 0; float:right;">
                                 </div>
                             </form>

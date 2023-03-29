@@ -15,7 +15,8 @@ require "./BDD.php";
 $submit = filter_input(INPUT_POST, 'publish');
 $commentaire = filter_input(INPUT_POST, 'commentaire');
 $targetDir = "images/"; //chemin du dosier ou seront stocker les medias
-$allowTypes = array('image/jpg', 'image/png', 'image/jpeg', 'image/gif', 'video/mp4', 'audio/mpeg'); //tableaux des type accepter
+/* Le code ci-dessus crée un tableau de types de fichiers autorisés à être téléchargés. */
+$allowTypes = array('image/jpg', 'image/png', 'image/jpeg', 'image/gif', 'video/mp4', 'audio/mpeg'); 
 $fileSize = 0; //taille de tout les media contenu dans le dossier
 $MaxSizeOneFile = 3 * 1024 * 1024; //taille maximum pour un media 
 $MaxSizeAllFile = 70 * 1024 * 1024; //taille maximum pour tout les media
@@ -48,8 +49,6 @@ if ($submit == "Publish") {
                         if ($file['size'][$key] <= $MaxSizeOneFile) {
                            /* Obtenir le nom de fichier du fichier en cours de téléchargement. */
                             $fileName = basename($_FILES['files']['name'][$key]);
-                            //recuperer l'extension du fichier
-                            $fileType = pathinfo($fileName, PATHINFO_EXTENSION);
                             //si le tableaux contient bien le bon type d'extension 
                             if (in_array($_FILES['files']['type'][$key], $allowTypes)) {
 
