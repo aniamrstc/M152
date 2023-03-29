@@ -11,31 +11,31 @@ ini_set('memory_limit', '-1');
 error_reporting(E_ALL);
 
 require "./BDD.php";
+require "./func.php";
 //initialisation variable
 $submit = filter_input(INPUT_POST, 'publish');
 $commentaire = filter_input(INPUT_POST, 'commentaire');
 $targetDir = "images/"; //chemin du dosier ou seront stocker les medias
 /* Le code ci-dessus crée un tableau de types de fichiers autorisés à être téléchargés. */
-$allowTypes = array('image/jpg', 'image/png', 'image/jpeg', 'image/gif', 'video/mp4', 'audio/mpeg'); 
+$allowTypes = array('image/jpg', 'image/png', 'image/jpeg', 'image/gif', 'video/mp4', 'audio/mpeg');
 $fileSize = 0; //taille de tout les media contenu dans le dossier
 $MaxSizeOneFile = 3 * 1024 * 1024; //taille maximum pour un media 
 $MaxSizeAllFile = 70 * 1024 * 1024; //taille maximum pour tout les media
 $error = []; //variable pour les messages d'erreurs
 
 if ($submit == "Publish") {
-    //lancement de la transaction
+
     /* Démarrage d'une transaction. */
-    
-/* Démarrage d'une transaction. */
     getConnexion()->beginTransaction();
     try {
-      /* Vérifier si la variable commentaire n'est pas vide. */
+        /* Vérifier si la variable commentaire n'est pas vide. */
         if (!empty($commentaire)) {
             /* Insertion d'un article dans la base de données. */
             $idPost = InsertPost($commentaire);
             $fileNames = array_filter($_FILES['files']['name']);
             if (!empty($fileNames)) {
-               /*une boucle for qui parcourt le tableau files et ajoute la taille de
+
+                /*une boucle for qui parcourt le tableau files et ajoute la taille de
                chaque fichier à la variable . */
                 for ($i = 0; $i < count($_FILES['files']['name']); $i++) {
                     $file = $_FILES['files'];
@@ -47,24 +47,26 @@ if ($submit == "Publish") {
                         $file = $_FILES['files'];
                         //si la taille d'un fichier est plus petit ou egal a 3 mega on execute
                         if ($file['size'][$key] <= $MaxSizeOneFile) {
-                           /* Obtenir le nom de fichier du fichier en cours de téléchargement. */
+
+                            /* Obtenir le nom de fichier du fichier en cours de téléchargement. */
                             $fileName = basename($_FILES['files']['name'][$key]);
                             //si le tableaux contient bien le bon type d'extension 
                             if (in_array($_FILES['files']['type'][$key], $allowTypes)) {
 
-                                
                                 $file_part = pathinfo($fileName);
                                 //on met le nom du fichier sans l'extension+un l'uniqid+l'extension
                                 $unique_filename = $file_part['filename'] . '_' . uniqid() . '.' . $file_part['extension'];
                                 //on concatene le chemin et le non unique puis on le deplace dans notre fichier
                                 $full_path = $targetDir . $unique_filename;
 
+
                                 if (count($error) == 0) {
                                     //si le fichier a bien été stocker dans le dossier on insere les données dans la base 
                                     if (move_uploaded_file($_FILES["files"]["tmp_name"][$key], $full_path)) {
-                                      /* Vérifier si le fichier existe et si c'est le cas, c'est
-                                      insérer le type de fichier, le nom de fichier unique et
-                                      l'idPost dans la base de données. */
+                                        ResizeImage($full_path, 800);
+                                        /* Vérifier si le fichier existe et si c'est le cas, c'est
+                                            insérer le type de fichier, le nom de fichier unique et
+                                            l'idPost dans la base de données. */
                                         if (file_exists($full_path)) {
 
                                             InsertMedia($_FILES['files']['type'][$key], $unique_filename, $idPost);
@@ -99,9 +101,7 @@ if ($submit == "Publish") {
         } else {
             $error[] = "vous devez saisir un commentaire";
         }
-      
-    }
-    catch (PDOException $exception) {
+    } catch (PDOException $exception) {
         getConnexion()->rollback();
         throw $exception;
     }
@@ -167,7 +167,11 @@ if ($submit == "Publish") {
                         <h4>Ecrivez un commentaire</h4>
                         <textarea class="form-control" id="commentaire" name="commentaire" rows="10" cols="100" placeholder="Write something..."></textarea>
                         <h4>Selectionner un media </h4>
-                        <input type="file" name="files[]" multiple accept='<?php  $type=""; foreach($allowTypes as $unType){$type.=$unType.",";}echo rtrim($type,",")?>'>
+                        <input type="file" name="files[]" multiple accept='<?php $type = "";
+                                                                            foreach ($allowTypes as $unType) {
+                                                                                $type .= $unType . ",";
+                                                                            }
+                                                                            echo rtrim($type, ",") ?>'>
                         <br>
                         <input class="btn btn-primary" type="submit" name="publish" id="publish" value="Publish">
                         <p> <?php
@@ -186,7 +190,7 @@ if ($submit == "Publish") {
         </div>
     </div>
 
-    
+
 </body>
 
 </html>

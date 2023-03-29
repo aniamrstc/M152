@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : localhost:3306
--- Généré le : mer. 29 mars 2023 à 07:56
+-- Généré le : mer. 29 mars 2023 à 15:57
 -- Version du serveur :  10.3.37-MariaDB-0ubuntu0.20.04.1
 -- Version de PHP : 8.1.13
 
@@ -43,13 +43,9 @@ CREATE TABLE `MEDIA` (
 --
 
 INSERT INTO `MEDIA` (`idMedia`, `typeMedia`, `nomMedia`, `creationDate`, `idPost`) VALUES
-(723, 'video/mp4', '6 3e4ffe7482884.80244378_6423d2b2a1e2b.mp4', '2023-03-29 05:54:58', 402),
-(724, 'audio/mpeg', 'Bruit sirène police_6423d2bf62caa.mp3', '2023-03-29 05:55:11', 403),
-(725, 'image/png', '6 étapes_6423d2de329c2.png', '2023-03-29 05:55:42', 404),
-(726, 'image/png', '35545_GWY_R_6423d2de32b9e.png', '2023-03-29 05:55:42', 404),
-(727, 'image/png', '41993_GWY_R_6423d2de36cfc.png', '2023-03-29 05:55:42', 404),
-(728, 'image/png', 'Capture_6423d2de36edd.PNG', '2023-03-29 05:55:42', 404),
-(729, 'image/png', 'Opera Instantané_2023-03-21_152154_aniamarostica.proto.io_6423d30108cc5.png', '2023-03-29 05:56:17', 405);
+(786, 'image/png', 'Bootstrap_logo.svg_64244193019ed.png', '2023-03-29 13:48:03', 521),
+(787, 'video/mp4', '6 3e4ffe7482884.80244378_642442f1cad78.mp4', '2023-03-29 13:53:53', 524),
+(788, 'image/png', 'javascript_642442fab029e.png', '2023-03-29 13:54:02', 525);
 
 -- --------------------------------------------------------
 
@@ -69,10 +65,9 @@ CREATE TABLE `POST` (
 --
 
 INSERT INTO `POST` (`idPost`, `commentaire`, `creationDate`, `modificationDate`) VALUES
-(402, 'Vidéo', '2023-03-29 05:54:58', '2023-03-29 05:54:58'),
-(403, 'audio', '2023-03-29 05:55:11', '2023-03-29 05:55:11'),
-(404, 'multimedia\r\n', '2023-03-29 05:55:42', '2023-03-29 05:55:42'),
-(405, 'image', '2023-03-29 05:56:17', '2023-03-29 05:56:17');
+(521, 'image', '2023-03-29 13:48:03', '2023-03-29 13:48:03'),
+(524, 'video', '2023-03-29 13:53:53', '2023-03-29 13:53:53'),
+(525, 'ff', '2023-03-29 13:54:02', '2023-03-29 13:54:02');
 
 --
 -- Index pour les tables déchargées
@@ -99,13 +94,13 @@ ALTER TABLE `POST`
 -- AUTO_INCREMENT pour la table `MEDIA`
 --
 ALTER TABLE `MEDIA`
-  MODIFY `idMedia` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=730;
+  MODIFY `idMedia` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=789;
 
 --
 -- AUTO_INCREMENT pour la table `POST`
 --
 ALTER TABLE `POST`
-  MODIFY `idPost` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=406;
+  MODIFY `idPost` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=526;
 
 --
 -- Contraintes pour les tables déchargées

@@ -159,3 +159,8 @@ function selectMediaByIdMedia($idMedia)
     $sql->execute([$idMedia]);
     return $sql->fetchAll(PDO::FETCH_ASSOC);
 }
+// function insertMetadata($nom,$marque,$modele,$date){
+//     $myDb = getConnexion();
+//     $sql = $myDb->prepare("INSERT INTO metadata (nom,marque,modele,date) VALUES (?,?,?,?)");
+//     $sql->execute([$nom, $marque, $modele,$date]);
+// }
