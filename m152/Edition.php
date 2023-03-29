@@ -2,8 +2,10 @@
 require "./BDD.php";
 session_start();
 
+/* Sélection des commentaires et des médias dans la base de données. */
 $arrayCommentaire = selectCommentaire($_SESSION['idPost']);
 $arrayMedia = SelectMedia($_SESSION['idPost']);
+/* Filtrer l'entrée du formulaire et l'affecter à une variable. */
 $commentaire = filter_input(INPUT_POST, 'commentaire');
 $idMedia = filter_input(INPUT_POST, 'idMedia');
 $edit = filter_input(INPUT_POST, 'edit');
@@ -14,10 +16,16 @@ $fileSize = 0; //taille de tout les media contenu dans le dossier
 $MaxSizeOneFile = 3 * 1024 * 1024; //taille maximum pour un media 
 $MaxSizeAllFile = 70 * 1024 * 1024; //taille maximum pour tout les media
 $error = []; //variable pour les messages d'erreurs
+/* Vérifier si le bouton d'édition a été cliqué. */
 if (isset($_POST['edit'])) {
+    getConnexion()->beginTransaction();
+    try{
+ /* Cette fonction met à jour la publication avec le nouveau commentaire. */
     UpdatePost($commentaire, $_SESSION['idPost']);
     $fileNames = array_filter($_FILES['files']['name']);
     if (!empty($fileNames)) {
+       /* boucle for qui parcourt le tableau files et ajoute la taille de chaque
+       fichier à la variable . */
         for ($i = 0; $i < count($_FILES['files']['name']); $i++) {
             $file = $_FILES['files'];
             $fileSize += $file['size'][$i];
@@ -44,6 +52,8 @@ if (isset($_POST['edit'])) {
                         if (count($error) == 0) {
                             //si le fichier a bien été stocker dans le dossier on insere les données dans la base 
                             if (move_uploaded_file($_FILES["files"]["tmp_name"][$key], $full_path)) {
+                               /* Ce code vérifie si le fichier existe et si c'est le cas, il insère
+                               les données dans la base de données. */
                                 if (file_exists($full_path)) {
 
                                     InsertMedia($_FILES['files']['type'][$key], $unique_filename, $_SESSION['idPost']);
@@ -67,24 +77,20 @@ if (isset($_POST['edit'])) {
             $error[] = 'le dossier est trop plein pour ajouter de nouveau media';
         }
     }
-    header("location:Home.php");
-    exit;
+    /* redirection vers la page d'accueil. */
+    if (count($error) != 0) {
+        getConnexion()->rollBack();
+    } else {
+        getConnexion()->commit();
+        header("location:Home.php");
+        exit;
+    }
+}catch (Exception $exception) {
+    getConnexion()->rollback();
+    throw $exception;
 }
-// if (isset($_POST['delete'])) {
-//     $unlinkAsError = false;
-//     $deleteAMedia = selectMediaByIdMedia($idMedia);
-//     foreach ($deleteAMedia as $Unmedia) {
+}
 
-//         if (!unlink($path . $Unmedia['nomMedia'])) {
-//             $unlinkAsError = true;
-//         }
-//     }
-//     if (!$unlinkAsError) {
-//         DeleteMedia($idMedia);
-//         header("Refresh:0");
-//         exit;
-//     }
-// }
 
 
 

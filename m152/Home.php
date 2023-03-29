@@ -9,24 +9,44 @@ $post = SelectPost();
 
 $path = "./images/";
 
+/* Récupération de l'idPost depuis le formulaire. */
 $idPost = filter_input(INPUT_POST, 'idPost');
 
-//si le bouton est cliquer on va supprimmer tout les medias selon l'id du post et si on la suppression
-//des medias dans le dossier a marcher alors on supprimme dans la base
+
+/* Vérifier si le bouton de suppression a été cliqué. */
 if (isset($_POST['delete'])) {
-	$unlinkAsError = false;
-	$deleteMedia = SelectMedia($idPost);
-	foreach ($deleteMedia as $Unmedia) {
-		if (!unlink($path . $Unmedia['nomMedia'])) {
-			$unlinkAsError = true;
+	getConnexion()->beginTransaction();
+	try {
+
+
+		$unlinkAsError = false;
+		/* Sélection de tous les médias pour une publication. */
+		$deleteMedia = SelectMedia($idPost);
+		/* boucle qui supprime tous les fichiers multimédias d'une publication. */
+		foreach ($deleteMedia as $unMedia) {
+			if (!unlink($path . $unMedia['nomMedia'])) {
+				$unlinkAsError = true;
+			}
 		}
-	}
-	if (!$unlinkAsError) {
-		DeletePost($idPost);
+		/* condition qui vérifie si la fonction unlink n'a pas renvoyé d'erreur. S'il n'a pas
+	renvoyé d'erreur, il supprime le message et actualise la page. */
+		if (!$unlinkAsError) {
+			DeletePost($idPost);
+		} else {
+			throw new Exception("Probleme avec le unlink");
+		}
+
+
+		getConnexion()->commit();
 		header("Refresh:0");
 		exit;
+	} catch (Exception $exception) {
+		getConnexion()->rollback();
+		throw $exception;
 	}
 }
+/* une condition qui vérifie si le bouton "édition" a été cliqué. S'il a été cliqué, il
+enregistrera l'idPost dans une session et redirigera vers la page "Edition.php". */
 if (isset($_POST['edition'])) {
 	$_SESSION['idPost'] = $idPost;
 	header("location:Edition.php");
@@ -137,7 +157,7 @@ if (isset($_POST['edition'])) {
 									?> <div class="panel panel-default">
 											<?php if ($numberOfMediaForAPost >= 2) { ?>
 
-												<div id="carousel<?= $value['idPost'] ?>" class="carousel slide" data-ride="carousel"style="padding:0 100px">
+												<div id="carousel<?= $value['idPost'] ?>" class="carousel slide" data-ride="carousel" style="padding:0 100px">
 													<div class="carousel-inner" role="listbox">
 														<?php
 														$isFirst = true;
@@ -147,12 +167,12 @@ if (isset($_POST['edition'])) {
 															<div class="item <?= $isFirst ? 'active' : '' ?> ">
 
 																<?php if (explode("/", $media['typeMedia'])[0] == "video") { ?>
-																
+
 																	<video class="img-responsive" autoplay loop>
 																		<source src="<?= $path . $media['nomMedia'] ?>">
 																	</video>
 																<?php } elseif (explode("/", $media['typeMedia'])[0] == "audio") { ?>
-																	
+
 																	<audio controls style="width:100%">
 																		<source src="<?= $path . $media['nomMedia'] ?>">
 																	</audio>
@@ -177,9 +197,9 @@ if (isset($_POST['edition'])) {
 														<span class="sr-only">Next</span>
 													</a>
 												</div>
-												
-												
-												
+
+
+
 											<?php } elseif ($numberOfMediaForAPost == 1) {
 
 											?>

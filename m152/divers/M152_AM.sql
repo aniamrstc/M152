@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : localhost:3306
--- Généré le : jeu. 16 fév. 2023 à 15:11
+-- Généré le : mer. 29 mars 2023 à 07:56
 -- Version du serveur :  10.3.37-MariaDB-0ubuntu0.20.04.1
 -- Version de PHP : 8.1.13
 
@@ -43,11 +43,13 @@ CREATE TABLE `MEDIA` (
 --
 
 INSERT INTO `MEDIA` (`idMedia`, `typeMedia`, `nomMedia`, `creationDate`, `idPost`) VALUES
-(286, 'image/png', 'endGame2_63ee379869fc0.png', '2023-02-16 14:03:04', 256),
-(287, 'image/png', 'Confection_63ee37c3c5bf0.png', '2023-02-16 14:03:47', 258),
-(288, 'image/png', 'endGame2_63ee37c3c9d3b.png', '2023-02-16 14:03:47', 258),
-(289, 'video/mp4', '63e4ffe7482884.80244378_63ee37df60635.mp4', '2023-02-16 14:04:15', 259),
-(290, 'image/jpeg', '1977198-or-argent-et-bronze-trophee-illustrationle-isole-sur-blanc-gratuit-vectoriel_63ee37df60724.jpg', '2023-02-16 14:04:15', 259);
+(723, 'video/mp4', '6 3e4ffe7482884.80244378_6423d2b2a1e2b.mp4', '2023-03-29 05:54:58', 402),
+(724, 'audio/mpeg', 'Bruit sirène police_6423d2bf62caa.mp3', '2023-03-29 05:55:11', 403),
+(725, 'image/png', '6 étapes_6423d2de329c2.png', '2023-03-29 05:55:42', 404),
+(726, 'image/png', '35545_GWY_R_6423d2de32b9e.png', '2023-03-29 05:55:42', 404),
+(727, 'image/png', '41993_GWY_R_6423d2de36cfc.png', '2023-03-29 05:55:42', 404),
+(728, 'image/png', 'Capture_6423d2de36edd.PNG', '2023-03-29 05:55:42', 404),
+(729, 'image/png', 'Opera Instantané_2023-03-21_152154_aniamarostica.proto.io_6423d30108cc5.png', '2023-03-29 05:56:17', 405);
 
 -- --------------------------------------------------------
 
@@ -67,10 +69,10 @@ CREATE TABLE `POST` (
 --
 
 INSERT INTO `POST` (`idPost`, `commentaire`, `creationDate`, `modificationDate`) VALUES
-(256, 'test', '2023-02-16 14:03:04', '2023-02-16 14:03:04'),
-(258, 'salut', '2023-02-16 14:03:47', '2023-02-16 14:03:47'),
-(259, 'vidéo', '2023-02-16 14:04:15', '2023-02-16 14:04:15'),
-(260, 'c\'est vide', '2023-02-16 14:05:20', '2023-02-16 14:05:20');
+(402, 'Vidéo', '2023-03-29 05:54:58', '2023-03-29 05:54:58'),
+(403, 'audio', '2023-03-29 05:55:11', '2023-03-29 05:55:11'),
+(404, 'multimedia\r\n', '2023-03-29 05:55:42', '2023-03-29 05:55:42'),
+(405, 'image', '2023-03-29 05:56:17', '2023-03-29 05:56:17');
 
 --
 -- Index pour les tables déchargées
@@ -97,13 +99,13 @@ ALTER TABLE `POST`
 -- AUTO_INCREMENT pour la table `MEDIA`
 --
 ALTER TABLE `MEDIA`
-  MODIFY `idMedia` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=291;
+  MODIFY `idMedia` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=730;
 
 --
 -- AUTO_INCREMENT pour la table `POST`
 --
 ALTER TABLE `POST`
-  MODIFY `idPost` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=261;
+  MODIFY `idPost` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=406;
 
 --
 -- Contraintes pour les tables déchargées

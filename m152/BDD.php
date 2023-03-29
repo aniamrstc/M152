@@ -5,6 +5,10 @@
 // Description:page qui contient toute les fonctions de la base de données
 require_once "Constante.php";
 
+/**
+ * connexion a la basse de données
+ *  
+ */
 function getConnexion()
 {
     static $myDb = null;
@@ -86,7 +90,7 @@ function GetNumberOfMediaForAPost($idPost)
 function SelectMedia($idPost)
 {
     $myDb = getConnexion();
-    $sql = $myDb->prepare("SELECT MEDIA.idMedia,MEDIA.nomMedia,MEDIA.typeMedia FROM MEDIA,POST WHERE MEDIA.idPost=POST.idPost AND POST.idPost=? ");
+    $sql = $myDb->prepare("SELECT MEDIA.idMedia,MEDIA.nomMedia,MEDIA.typeMedia,POST.idPost FROM MEDIA,POST WHERE MEDIA.idPost=POST.idPost AND POST.idPost=? ");
     $sql->execute([$idPost]);
     return $sql->fetchAll(PDO::FETCH_ASSOC);
 }
