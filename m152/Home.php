@@ -5,6 +5,7 @@
 // Description:page d'accueil du site
 require "./BDD.php";
 session_start();
+
 $post = SelectPost();
 
 $path = "./images/";
@@ -169,16 +170,16 @@ if (isset($_POST['edition'])) {
 																<?php if (explode("/", $media['typeMedia'])[0] == "video") { ?>
 
 																	<video class="img-responsive" autoplay loop>
-																		<source src="<?= $path . $media['nomMedia'] ?>">
+																		<source src="<?= "GetImage.php?file=" . $media['idMedia'] ?>">
 																	</video>
 																<?php } elseif (explode("/", $media['typeMedia'])[0] == "audio") { ?>
 
 																	<audio controls style="width:100%">
-																		<source src="<?= $path . $media['nomMedia'] ?>">
+																		<source src="<?= "GetImage.php?file=" . $media['idMedia'] ?>">
 																	</audio>
 
 																<?php } else { ?>
-																	<img src="<?= $path . $media['nomMedia'] ?>" alt="... " class="img-responsive">
+																	<img src="<?= "GetImage.php?file=" . $media['idMedia'] ?>" alt="... " class="img-responsive">
 																<?php } ?>
 															</div>
 
@@ -209,14 +210,14 @@ if (isset($_POST['edition'])) {
 												<div class="panel-thumbnail">
 													<?php if (explode("/", $arrayMedia[0]['typeMedia'])[0] == "video") { ?>
 														<video class="img-responsive" autoplay loop>
-															<source src="<?= $path . $arrayMedia[0]['nomMedia'] ?>">
+															<source src="<?= "GetImage.php?file=" . $arrayMedia[0]['idMedia'] ?>">
 														</video>
 													<?php } elseif (explode("/", $arrayMedia[0]['typeMedia'])[0] == "audio") { ?>
 														<audio controls style="width:100%">
-															<source src="<?= $path . $arrayMedia[0]['nomMedia'] ?>">
+															<source src="<?= "GetImage.php?file=" . $arrayMedia[0]['idMedia'] ?>">
 														</audio>
 													<?php } else { ?>
-														<img src="<?= $path . $arrayMedia[0]['nomMedia'] ?>" class="img-responsive">
+														<img src="<?= "GetImage.php?file=" . $arrayMedia[0]['idMedia'] ?>" class="img-responsive">
 													<?php } ?>
 												</div>
 

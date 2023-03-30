@@ -166,14 +166,14 @@ if (isset($_POST['edit'])) {
                                            
                                                 <?php if (explode("/", $media['typeMedia'])[0] == "video") { ?>
                                                     <video class="img-responsive" style=" width:400px;" autoplay loop>
-                                                        <source src="<?= $path . $media['nomMedia'] ?>">
+                                                        <source src="<?= "GetImage.php?file=" . $media['idMedia'] ?>">
                                                     </video>
                                                 <?php } elseif (explode("/", $media['typeMedia'])[0] == "audio") { ?>
                                                     <audio controls style="width:100%">
-                                                        <source src="<?= $path . $media['nomMedia'] ?>">
+                                                        <source src="<?= "GetImage.php?file=" . $media['idMedia'] ?>">
                                                     </audio>
                                                 <?php } else { ?>
-                                                    <img src="<?= $path . $media['nomMedia'] ?>" alt="... " class="img-responsive" style=" width:400px;">
+                                                    <img src="<?= "GetImage.php?file=" . $media['idMedia'] ?>" alt="... " class="img-responsive" style=" width:400px;">
                                                 <?php } ?>
                                          
                                             <input type="button" onclick="deleteMedia(<?= $media['idMedia'] . ',' . $_SESSION['idPost'] ?>)" name="delete" value="&#x1F5D1;" style="width: 40px;font-size: 25px; margin:5px 0 25px 0">

@@ -28,6 +28,7 @@ if ($submit == "Publish") {
     /* Démarrage d'une transaction. */
     getConnexion()->beginTransaction();
     try {
+
         /* Vérifier si la variable commentaire n'est pas vide. */
         if (!empty($commentaire)) {
             /* Insertion d'un article dans la base de données. */
@@ -67,16 +68,18 @@ if ($submit == "Publish") {
                                         /* Vérifier si le fichier existe et si c'est le cas, c'est
                                             insérer le type de fichier, le nom de fichier unique et
                                             l'idPost dans la base de données. */
-                                        if (file_exists($full_path)) {
 
-                                            $image_info = getimagesize($full_path);
-                                            $width =isset( $image_info[0]);
-                                            $height = isset($image_info[1]);
-                                            $file_size = filesize($full_path);
-                                            $bits_per_pixel =isset( $image_info['bits']);
-                                       
-                                            InsertMedia($_FILES['files']['type'][$key], $unique_filename, $width, $height, $file_size,$bits_per_pixel, $idPost);
-                                        }
+
+
+                                        $exif_data = exif_read_data($full_path);
+
+                                        $marque = isset($exif_data['Make']);
+                                        $model = isset($exif_data['Model']);
+                                        $flash = isset($exif_data['Flash']);
+                                        $datePriseDeVue = isset($exif_data['DateTimeOriginal']);
+
+                                        InsertMedia($_FILES['files']['type'][$key], $unique_filename, $marque, $model, $flash, $datePriseDeVue, $idPost);
+                                        
                                     }
                                 } else {
                                     $error[] = "l'importation n'a pas marcher";
@@ -183,21 +186,21 @@ if ($submit == "Publish") {
                         <p> <?php
                             if (!empty($error)) {
                                 if (count($error) >= 0) { ?>
-                                    <div class="row h-100 justify-content-center align-items-center">
-                                        <div class="alert alert-danger w-50 mt-3 col-12 text-center" role="alert">
-                                            <?php
-                                            foreach ($error as $messageError) {
-                                                echo $messageError;
-                                            }
-                    
-                                            ?>
-                                        </div>
-                                    </div>
-                                <?php }
+                        <div class="row h-100 justify-content-center align-items-center">
+                            <div class="alert alert-danger w-50 mt-3 col-12 text-center" role="alert">
+                                <?php
+                                    foreach ($error as $messageError) {
+                                        echo $messageError;
+                                    }
+
+                                ?>
+                            </div>
+                        </div>
+                <?php }
                             }
-                            
-                        
-                            ?></p>
+
+
+                ?></p>
 
 
                     </form>
