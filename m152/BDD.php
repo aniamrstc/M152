@@ -32,11 +32,11 @@ function getConnexion()
  * @param file_name le nom du media
  * @param idPost l'id du dernier post
  */
-function InsertMedia($file_type, $file_name, $idPost)
+function InsertMedia($file_type, $file_name,$width,$height,$fileSize,$profondeurCouleur,$idPost)
 {
     $today = date("Y-m-d H:i:s");
-    $sql = getConnexion()->prepare("INSERT INTO MEDIA (typeMedia, nomMedia, creationDate,idPost) VALUES (?,?,?,?)");
-    $sql->execute([$file_type, $file_name, $today, $idPost]);
+    $sql = getConnexion()->prepare("INSERT INTO MEDIA (typeMedia, nomMedia, creationDate,width,height,fileSize,profondeurCouleur,idPost) VALUES (?,?,?,?,?,?,?,?)");
+    $sql->execute([$file_type, $file_name, $today,$width,$height,$fileSize,$profondeurCouleur,$idPost]);
 }
 /**
  * insere des nouveau post dans la base de données
@@ -159,8 +159,3 @@ function selectMediaByIdMedia($idMedia)
     $sql->execute([$idMedia]);
     return $sql->fetchAll(PDO::FETCH_ASSOC);
 }
-// function insertMetadata($nom,$marque,$modele,$date){
-//     $myDb = getConnexion();
-//     $sql = $myDb->prepare("INSERT INTO metadata (nom,marque,modele,date) VALUES (?,?,?,?)");
-//     $sql->execute([$nom, $marque, $modele,$date]);
-// }

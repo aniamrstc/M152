@@ -1,5 +1,6 @@
 <?php
 require "./BDD.php";
+require "./func.php";
 session_start();
 
 /* Sélection des commentaires et des médias dans la base de données. */
@@ -53,10 +54,20 @@ if (isset($_POST['edit'])) {
                             if (move_uploaded_file($_FILES["files"]["tmp_name"][$key], $full_path)) {
                                /* Ce code vérifie si le fichier existe et si c'est le cas, il insère
                                les données dans la base de données. */
-                                if (file_exists($full_path)) {
+                               ResizeImage($full_path, 800);
+                               /* Vérifier si le fichier existe et si c'est le cas, c'est
+                                   insérer le type de fichier, le nom de fichier unique et
+                                   l'idPost dans la base de données. */
+                               if (file_exists($full_path)) {
 
-                                    InsertMedia($_FILES['files']['type'][$key], $unique_filename, $_SESSION['idPost']);
-                                }
+                                   $image_info = getimagesize($full_path);
+                                   $width = $image_info[0];
+                                   $height = $image_info[1];
+                                   $file_size = filesize($full_path);
+                                   $bits_per_pixel = $image_info['bits'];
+                              
+                                   InsertMedia($_FILES['files']['type'][$key], $unique_filename, $width, $height, $file_size,$bits_per_pixel, $_SESSION['idPost']);
+                               }
                             }
                         } else {
                             $error[] = "l'importation n'a pas marcher";
@@ -181,7 +192,24 @@ if (isset($_POST['edit'])) {
                                     <input class="btn btn-primary" type="submit" name="edit" id="edit" value="edit" style="width: 100px; margin:0 0 25px 0; float:right;">
                                 </div>
                             </form>
-
+                            <p> <?php
+                            if (!empty($error)) {
+                                if (count($error) >= 0) { ?>
+                                    <div class="row h-100 justify-content-center align-items-center">
+                                        <div class="alert alert-danger w-50 mt-3 col-12 text-center" role="alert">
+                                            <?php
+                                            foreach ($error as $messageError) {
+                                                echo $messageError;
+                                            }
+                    
+                                            ?>
+                                        </div>
+                                    </div>
+                                <?php }
+                            }
+                            
+                        
+                            ?></p>
                         <?php } ?>
                     </div>
                 </div>

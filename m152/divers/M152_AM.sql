@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : localhost:3306
--- Généré le : mer. 29 mars 2023 à 15:57
+-- Généré le : jeu. 30 mars 2023 à 11:24
 -- Version du serveur :  10.3.37-MariaDB-0ubuntu0.20.04.1
 -- Version de PHP : 8.1.13
 
@@ -35,6 +35,10 @@ CREATE TABLE `MEDIA` (
   `typeMedia` text NOT NULL,
   `nomMedia` text NOT NULL,
   `creationDate` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `width` varchar(100) DEFAULT NULL,
+  `height` varchar(100) DEFAULT NULL,
+  `fileSize` varchar(100) DEFAULT NULL,
+  `profondeurCouleur` varchar(100) DEFAULT NULL,
   `idPost` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
@@ -42,10 +46,18 @@ CREATE TABLE `MEDIA` (
 -- Déchargement des données de la table `MEDIA`
 --
 
-INSERT INTO `MEDIA` (`idMedia`, `typeMedia`, `nomMedia`, `creationDate`, `idPost`) VALUES
-(786, 'image/png', 'Bootstrap_logo.svg_64244193019ed.png', '2023-03-29 13:48:03', 521),
-(787, 'video/mp4', '6 3e4ffe7482884.80244378_642442f1cad78.mp4', '2023-03-29 13:53:53', 524),
-(788, 'image/png', 'javascript_642442fab029e.png', '2023-03-29 13:54:02', 525);
+INSERT INTO `MEDIA` (`idMedia`, `typeMedia`, `nomMedia`, `creationDate`, `width`, `height`, `fileSize`, `profondeurCouleur`, `idPost`) VALUES
+(794, 'video/mp4', '6 3e4ffe7482884.80244378_6425506b01d6d.mp4', '2023-03-30 09:03:39', NULL, NULL, '233346', NULL, 549),
+(795, 'image/png', 'Bootstrap_logo.svg_64255072c6388.png', '2023-03-30 09:03:46', '800', '800', '67522', '8', 550),
+(796, 'audio/mpeg', 'Bruit sirène police_6425507e132f2.mp3', '2023-03-30 09:03:58', NULL, NULL, '511720', NULL, 551),
+(797, 'video/mp4', '6 3e4ffe7482884.80244378_64255098580ee.mp4', '2023-03-30 09:04:24', NULL, NULL, '233346', NULL, 552),
+(800, 'audio/mpeg', 'Bruit sirène police_6425509882e9e.mp3', '2023-03-30 09:04:24', NULL, NULL, '511720', NULL, 552),
+(801, 'image/png', 'javascript_642550988335e.png', '2023-03-30 09:04:24', '800', '800', '30867', '8', 552),
+(804, 'video/mp4', '6 3e4ffe7482884.80244378_642550de08d15.mp4', '2023-03-30 09:05:34', NULL, NULL, '233346', NULL, 554),
+(805, 'audio/mpeg', 'Bruit sirène police_642550de08fcd.mp3', '2023-03-30 09:05:34', NULL, NULL, '511720', NULL, 554),
+(806, 'image/png', 'javascript_642550f3b5f7c.png', '2023-03-30 09:05:55', '800', '800', '30867', '8', 554),
+(808, 'image/jpeg', 'RS3-AV_64255126358bf.jpeg', '2023-03-30 09:06:46', '800', '800', '67277', '8', 552),
+(909, 'image/png', 'Bootstrap_logo.svg_6425551e37ce7.png', '2023-03-30 09:23:42', '800', '800', '67522', '8', 554);
 
 -- --------------------------------------------------------
 
@@ -65,9 +77,11 @@ CREATE TABLE `POST` (
 --
 
 INSERT INTO `POST` (`idPost`, `commentaire`, `creationDate`, `modificationDate`) VALUES
-(521, 'image', '2023-03-29 13:48:03', '2023-03-29 13:48:03'),
-(524, 'video', '2023-03-29 13:53:53', '2023-03-29 13:53:53'),
-(525, 'ff', '2023-03-29 13:54:02', '2023-03-29 13:54:02');
+(549, 'video', '2023-03-30 09:03:39', '2023-03-30 09:03:39'),
+(550, 'image', '2023-03-30 09:03:46', '2023-03-30 09:03:46'),
+(551, 'audio', '2023-03-30 09:03:58', '2023-03-30 09:03:58'),
+(552, 'multi media', '2023-03-30 09:04:24', '2023-03-30 09:04:24'),
+(554, 'video+audio+image', '2023-03-30 09:05:34', '2023-03-30 09:13:52');
 
 --
 -- Index pour les tables déchargées
@@ -94,13 +108,13 @@ ALTER TABLE `POST`
 -- AUTO_INCREMENT pour la table `MEDIA`
 --
 ALTER TABLE `MEDIA`
-  MODIFY `idMedia` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=789;
+  MODIFY `idMedia` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=910;
 
 --
 -- AUTO_INCREMENT pour la table `POST`
 --
 ALTER TABLE `POST`
-  MODIFY `idPost` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=526;
+  MODIFY `idPost` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=570;
 
 --
 -- Contraintes pour les tables déchargées

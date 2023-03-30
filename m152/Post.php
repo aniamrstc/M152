@@ -69,7 +69,13 @@ if ($submit == "Publish") {
                                             l'idPost dans la base de données. */
                                         if (file_exists($full_path)) {
 
-                                            InsertMedia($_FILES['files']['type'][$key], $unique_filename, $idPost);
+                                            $image_info = getimagesize($full_path);
+                                            $width =isset( $image_info[0]);
+                                            $height = isset($image_info[1]);
+                                            $file_size = filesize($full_path);
+                                            $bits_per_pixel =isset( $image_info['bits']);
+                                       
+                                            InsertMedia($_FILES['files']['type'][$key], $unique_filename, $width, $height, $file_size,$bits_per_pixel, $idPost);
                                         }
                                     }
                                 } else {
@@ -175,11 +181,22 @@ if ($submit == "Publish") {
                         <br>
                         <input class="btn btn-primary" type="submit" name="publish" id="publish" value="Publish">
                         <p> <?php
-                            if (count($error) >= 0) {
-                                foreach ($error as $uneError) {
-                                    echo $uneError . "\n";
-                                }
+                            if (!empty($error)) {
+                                if (count($error) >= 0) { ?>
+                                    <div class="row h-100 justify-content-center align-items-center">
+                                        <div class="alert alert-danger w-50 mt-3 col-12 text-center" role="alert">
+                                            <?php
+                                            foreach ($error as $messageError) {
+                                                echo $messageError;
+                                            }
+                    
+                                            ?>
+                                        </div>
+                                    </div>
+                                <?php }
                             }
+                            
+                        
                             ?></p>
 
 

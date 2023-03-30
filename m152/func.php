@@ -45,7 +45,7 @@ function ResizeImage($file, $newSize) {
     }
 
     // Redimensionnement de l'image source vers l'image de destination
-    if (!imagecopyresampled($dst, $src, 0, 0, $x, $y, $newSize, $newSize, $dim, $dim)) {
+    if (!imagecopyresampled($dst, $src, 0, 0, intval($x), intval($y), intval($newSize), intval($newSize), intval($dim), intval($dim))) {
         return false;
     }
 
